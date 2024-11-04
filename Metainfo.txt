@@ -1,0 +1,12 @@
+
+Name of QuantLet: 'LLM-Risk'
+
+Published in: 'Financial Risk Forecasting with Large Language Models'
+
+Description: 'Implementation of Value at Risk (VaR) and Expected Shortfall (ES) estimation using Large Language Models (LLMs) for financial time series forecasting.'
+
+Keywords: 'Value at Risk, Expected Shortfall, Large Language Models, Financial Risk, Time Series Forecasting'
+
+Author: 'Daniel Traian Pele'
+
+Submitted: 'Monday, 4 November 2024'
