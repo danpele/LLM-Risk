@@ -1,0 +1,1 @@
+{"model": {"name": "garch", "params": {"p": 1, "q": 1}}, "data": {"feature": "log_returns", "preprocessing": {"name": "StandardScaler"}, "path": "data/SP500.xlsx"}, "bootstrap": {"generate": "exponential", "num_sim": 100, "njobs": 32}, "min_steps": 5, "maxtrial": 1, "maxiter": 1000, "solver": "SLSQP", "K": null, "interval_step": null}
