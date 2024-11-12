@@ -7,6 +7,6 @@ Description: 'Implementation of Value at Risk (VaR) and Expected Shortfall (ES) 
 
 Keywords: 'Value at Risk, Expected Shortfall, Large Language Models, Financial Risk, Time Series Forecasting'
 
-Author: 'Daniel Traian Pele'
+Author: ''
 
 Submitted: 'Monday, 4 November 2024'
