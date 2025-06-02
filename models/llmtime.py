@@ -210,8 +210,7 @@ def get_llmtime_predictions_data(train, test, model, settings, num_samples=10, t
     assert all(len(t)==test_len for t in test), f'All test series must have same length, got {[len(t) for t in test]}'
 
     # Create a unique scaler for each series
-    # scalers = [get_scaler(train[i].values, alpha=alpha, beta=beta, basic=basic) for i in range(len(train))]
-    scalers = [Scaler(transform=lambda x: x, inv_transform=lambda x: x) for i in range(len(train))]
+    scalers = [get_scaler(train[i].values, alpha=alpha, beta=beta, basic=basic) for i in range(len(train))]
 
     # transform input_arrs
     input_arrs = [train[i].values for i in range(len(train))]

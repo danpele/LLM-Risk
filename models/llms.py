@@ -1,6 +1,6 @@
 from functools import partial
-from models.gpt import gpt_completion_fn, o1_mini_completion_fn, gpt_nll_fn
-from models.gpt import tokenize_fn as gpt_tokenize_fn, o1_tokenize_fn
+from models.gpt import gpt_completion_fn, gpt_nll_fn
+from models.gpt import tokenize_fn as gpt_tokenize_fn
 from models.llama import llama_completion_fn, llama_nll_fn
 from models.llama import tokenize_fn as llama_tokenize_fn
 
@@ -10,6 +10,7 @@ from models.mistral import tokenize_fn as mistral_tokenize_fn
 from models.mistral_api import mistral_api_completion_fn, mistral_api_nll_fn
 from models.mistral_api import tokenize_fn as mistral_api_tokenize_fn
 
+import tiktoken
 
 # Required: Text completion function for each model
 # -----------------------------------------------
@@ -27,10 +28,11 @@ from models.mistral_api import tokenize_fn as mistral_api_tokenize_fn
 #   - list: Sampled completion strings from the model.
 completion_fns = {
     'text-davinci-003': partial(gpt_completion_fn, model='text-davinci-003'),
-    'gpt-4': partial(gpt_completion_fn, model='gpt-4'),
+    'o1-preview':partial(gpt_completion_fn, model='o1-preview'),
+    'gpt-4-turbo': partial(gpt_completion_fn, model='gpt-4-turbo'),
+      'gpt-4o': partial(gpt_completion_fn, model='gpt-4o'),
     'gpt-4-1106-preview':partial(gpt_completion_fn, model='gpt-4-1106-preview'),
     'gpt-3.5-turbo-instruct': partial(gpt_completion_fn, model='gpt-3.5-turbo-instruct'),
-    'o1-mini': partial(o1_mini_completion_fn, model='o1-mini'),
     'gpt-3.5-turbo': partial(gpt_completion_fn, model='gpt-3.5-turbo'),
     'mistral': partial(mistral_completion_fn, model='mistral'),
     'mistral-api-tiny': partial(mistral_api_completion_fn, model='mistral-tiny'),
@@ -84,10 +86,11 @@ nll_fns = {
 # Returns:
 #   - token_ids (list): A list of token ids.
 tokenization_fns = {
+    'o1-preview': partial(gpt_tokenize_fn, model='o1-preview'),
     'text-davinci-003': partial(gpt_tokenize_fn, model='text-davinci-003'),
     'gpt-3.5-turbo-instruct': partial(gpt_tokenize_fn, model='gpt-3.5-turbo-instruct'), 
-    'o1-mini': partial(o1_tokenize_fn, model='o1-mini'), 
     'gpt-3.5-turbo': partial(gpt_tokenize_fn, model='gpt-3.5-turbo'),
+    'gpt-4o': partial(gpt_tokenize_fn, model='gpt-4o'),
     'mistral': partial(mistral_tokenize_fn, model='mistral'),
     'mistral-api-tiny': partial(mistral_api_tokenize_fn, model='mistral-tiny'),
     'mistral-api-small': partial(mistral_api_tokenize_fn, model='mistral-small'),
@@ -104,7 +107,6 @@ tokenization_fns = {
 context_lengths = {
     'text-davinci-003': 4097,
     'gpt-3.5-turbo-instruct': 4097,
-    'o1-mini': 128_000,
     'gpt-3.5-turbo': 4097,
     'mistral-api-tiny': 4097,
     'mistral-api-small': 4097,

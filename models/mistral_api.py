@@ -1,6 +1,6 @@
 from data.serialize import serialize_arr, SerializerSettings
 from mistralai.client import MistralClient
-from mistralai.models.chat_completion import ChatMessage
+#from mistralai.models.chat_completion import ChatMessage
 import tiktoken
 import os
 import numpy as np

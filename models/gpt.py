@@ -4,20 +4,6 @@ import tiktoken
 import numpy as np
 from jax import grad,vmap
 
-def o1_tokenize_fn(str, model):
-    """
-    Retrieve the token IDs for a string for a specific GPT model.
-
-    Args:
-        str (list of str): str to be tokenized.
-        model (str): Name of the LLM model.
-
-    Returns:
-        list of int: List of corresponding token IDs.
-    """
-    encoding = tiktoken.encoding_for_model("gpt-4o")
-    return encoding.encode(str)
-
 
 def tokenize_fn(str, model):
     """
@@ -51,30 +37,6 @@ def get_allowed_ids(strs, model):
         ids.extend(id)
     return ids
 
-def o1_mini_completion_fn(model, input_str, steps, settings, num_samples, temp):
-    extra_input = f"You are a helpful assistant that performs time series predictions. The user will provide a sequence and you will predict the remaining sequence. The sequence is represented by decimal strings separated by commas. Please produce {num_samples} possible values separated by comma for the next element in the sequence without producing any additional text. Do not say anything like 'the next terms in the sequence are', just return the numbers. Sequence:\n"
-    n_retries = 10
-    i_retry = 0
-    while i_retry < n_retries and len(realizations) < num_samples:
-        response = openai.ChatCompletion.create(
-            model=model,
-            messages=[
-                {"role": "user", "content": extra_input + input_str}
-            ],
-            request_timeout=30
-        )
-        message_contents = response.choices[0].message.content.replace("\\-", "-").replace("\n", "")
-        if message_contents.endswith("."):
-            message_contents = message_contents[:-1]
-        realizations = []
-        for sample in message_contents.split(","):
-                realizations.append(sample.strip())
-        i_retry += 1
-    if i_retry == n_retries and len(realizations) < num_samples:
-        print(f"Got only {len(realizations)} samples when expected {num_samples} after {n_retries} retries. If the difference is too large, will retry.")
-
-    return realizations
-
 def gpt_completion_fn(model, input_str, steps, settings, num_samples, temp):
     """
     Generate text completions from GPT using OpenAI's API.
@@ -96,10 +58,9 @@ def gpt_completion_fn(model, input_str, steps, settings, num_samples, temp):
     allowed_tokens = [settings.bit_sep + str(i) for i in range(settings.base)] 
     allowed_tokens += [settings.time_sep, settings.plus_sign, settings.minus_sign]
     allowed_tokens = [t for t in allowed_tokens if len(t) > 0] # remove empty tokens like an implicit plus sign
-    if (model not in ['gpt-3.5-turbo','gpt-4','gpt-4-1106-preview']): # logit bias not supported for chat models
+    if (model not in ['gpt-3.5-turbo','gpt-4-turbo','gpt-4-1106-preview','o1-preview', 'gpt-4o']): # logit bias not supported for chat models
         logit_bias = {id: 30 for id in get_allowed_ids(allowed_tokens, model)}
-        
-    if model in ['gpt-3.5-turbo','gpt-4','gpt-4-1106-preview']:
+    if model in ['gpt-3.5-turbo','gpt-4-turbo','gpt-4-1106-preview','o1-preview', 'gpt-4o']:
         chatgpt_sys_message = "You are a helpful assistant that performs time series predictions. The user will provide a sequence and you will predict the remaining sequence. The sequence is represented by decimal strings separated by commas."
         extra_input = "Please continue the following sequence without producing any additional text. Do not say anything like 'the next terms in the sequence are', just return the numbers. Sequence:\n"
         response = openai.ChatCompletion.create(
